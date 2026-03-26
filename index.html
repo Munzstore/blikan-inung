@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untuk Inung Tersayang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap');
+
+        body {
+            background: #fff5f7;
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-romance {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .heart {
+            position: fixed;
+            top: -10px;
+            font-size: 20px;
+            color: #ff4d6d;
+            user-select: none;
+            z-index: 1000;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+
+        .btn-love {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-love:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
+        }
+
+        #typing-text::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Audio Placeholder (Bisa diganti URL musik romantis) -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Main Container -->
+    <div id="main-card" class="max-w-md w-full glass p-8 shadow-2xl text-center animate__animated animate__fadeIn">
+        
+        <!-- Header Image/Icon -->
+        <div class="mb-6 relative inline-block">
+            <div class="w-24 h-24 bg-pink-200 rounded-full flex items-center justify-center mx-auto mb-4 animate__animated animate__pulse animate__infinite">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-pink-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </div>
+            <h1 class="text-4xl font-romance text-pink-600 mb-2">Halo, Inung..</h1>
+        </div>
+
+        <!-- Dynamic Message -->
+        <div class="mb-8 min-h-[100px]">
+            <p id="typing-text" class="text-gray-700 italic leading-relaxed"></p>
+        </div>
+
+        <!-- Buttons Area -->
+        <div id="action-area" class="space-y-4">
+            <button onclick="startJourney()" id="btn-start" class="btn-love bg-pink-500 text-white px-8 py-3 rounded-full font-bold w-full shadow-lg">
+                Klik Ini Sebentar
+            </button>
+        </div>
+
+        <!-- Hidden Question (Will show later) -->
+        <div id="final-question" class="hidden animate__animated animate__fadeInUp">
+            <p class="text-xl font-bold text-gray-800 mb-6">Inung, mau nggak kita mulai lagi dari awal? 🥺</p>
+            <div class="flex gap-4 justify-center">
+                <button onclick="answerYes()" class="btn-love bg-green-500 text-white px-6 py-2 rounded-lg font-bold">Mau!</button>
+                <button onmouseover="moveButton(this)" id="no-btn" class="bg-gray-400 text-white px-6 py-2 rounded-lg font-bold">Enggak</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <p class="mt-8 text-xs text-gray-400">Dibuat dengan segenap rasa kangen</p>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-[2000] p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center animate__animated animate__zoomIn">
+            <h2 class="text-3xl font-romance text-pink-600 mb-4">Yeay! I Love You!</h2>
+            <p class="text-gray-600 mb-6">Makasih ya Nung udah kasih kesempatan. Aku janji bakal lebih baik lagi. Chat aku sekarang ya! ❤️</p>
+            <button onclick="closeModal()" class="bg-pink-500 text-white px-6 py-2 rounded-full font-bold">Kirim Pesan ke Aku</button>
+        </div>
+    </div>
+
+    <script>
+        const message = "Aku cuma mau bilang... akhir-akhir ini aku sering kepikiran kamu. Semua tempat yang kita datangi, lagu yang kita dengar, semuanya masih tentang kamu. Jujur, aku kangen banget sama Inung yang selalu ada buat aku...";
+        let i = 0;
+        const speed = 70;
+
+        function typeWriter() {
+            if (i < message.length) {
+                document.getElementById("typing-text").innerHTML += message.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+            }
+        }
+
+        window.onload = () => {
+            typeWriter();
+            setInterval(createHeart, 300);
+        };
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            heart.style.opacity = Math.random();
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+
+        function startJourney() {
+            // Play music if possible
+            const music = document.getElementById("bgMusic");
+            music.play().catch(() => console.log("User must interact first"));
+
+            document.getElementById("btn-start").classList.add("hidden");
+            
+            // Simulation of heart loading
+            const text = document.getElementById("typing-text");
+            text.innerHTML = "Lagi kangen banget...";
+            
+            setTimeout(() => {
+                text.innerHTML = "Ingat gak waktu kita ketawa bareng?";
+                setTimeout(() => {
+                    text.innerHTML = "Aku pengen kita kayak gitu lagi.";
+                    document.getElementById("final-question").classList.remove("hidden");
+                }, 2000);
+            }, 2000);
+        }
+
+        function moveButton(btn) {
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        function answerYes() {
+            document.getElementById("success-modal").classList.remove("hidden");
+            // Blow more hearts
+            for(let j=0; j<50; j++) {
+                setTimeout(createHeart, j * 50);
+            }
+        }
+
+        function closeModal() {
+            // Ganti nomor WA di bawah ini dengan nomor kamu
+            window.location.href = "https://wa.me/6283163752660?text=Iya%20aku%20mau%20balikan%20sama%20kamu%20:)";
+        }
+    </script>
+</body>
+</html>
